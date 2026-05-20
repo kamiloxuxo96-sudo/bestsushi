@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bestsushi — Paredones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;
+  --border:#2a2a2a;--text:#f5f0e8;--text2:#9a9080;
+  --accent:#c8a96e;--accent2:#e8c98e;--red:#cc3333;
+  --success:#2d6a4f;--success-t:#52b788;
+  --warn:#7b4f00;--warn-t:#f4a261;
+  --info:#1a3a5c;--info-t:#74b9e8;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:100px}
+h1,h2,h3{font-family:'Playfair Display',serif}
+
+/* HEADER */
+.header{padding:20px 20px 0;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);padding-bottom:16px}
+.logo-circle{width:48px;height:48px;border-radius:50%;border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.brand-name{font-family:'Playfair Display',serif;font-size:20px;color:var(--accent)}
+.brand-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.horario-badge{margin-left:auto;font-size:10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;color:var(--text2);text-align:right;line-height:1.5}
+
+/* TABS */
+.tab-bar{display:flex;overflow-x:auto;gap:0;border-bottom:1px solid var(--border);padding:0 20px;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab{padding:14px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:var(--text2);background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:color .2s}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* SECTIONS */
+.section{display:none;padding:0 20px}
+.section.active{display:block}
+
+/* SUCCESS */
+.success-msg{background:var(--success);color:var(--success-t);border-radius:10px;padding:14px;text-align:center;font-size:14px;margin:16px 0;display:none}
+
+/* CATEGORY */
+.cat-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);padding:20px 0 10px;border-bottom:1px solid var(--border);font-weight:500}
+.cat-note{font-size:11px;color:var(--text2);padding:6px 0 4px;font-style:italic}
+
+/* ITEM ROW */
+.item-row{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+.item-info{flex:1;min-width:0}
+.item-name{font-size:14px;font-weight:500;margin-bottom:3px}
+.item-desc{font-size:11px;color:var(--text2);line-height:1.5}
+.item-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+.item-price{font-size:14px;font-weight:500;color:var(--accent)}
+.qty-ctrl{display:flex;align-items:center;gap:8px}
+.qty-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text);transition:border-color .2s}
+.qty-btn:hover{border-color:var(--accent)}
+.qty-num{font-size:13px;font-weight:500;min-width:18px;text-align:center;color:var(--accent)}
+
+/* CARRITO BAR */
+.carrito-bar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:var(--surface);border-top:1px solid var(--border);padding:12px 20px;display:none}
+.btn-primary{width:100%;padding:14px;background:var(--accent);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+.btn-primary:hover{background:var(--accent2)}
+.btn-sec{padding:10px 18px;border:1px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;transition:border-color .2s}
+.btn-sec:hover{border-color:var(--accent)}
+
+/* FORM */
+.form-group{margin-bottom:16px}
+.form-group label{font-size:12px;color:var(--text2);display:block;margin-bottom:6px;letter-spacing:.05em}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group select option{background:var(--surface2)}
+.form-section-title{font-size:14px;font-weight:500;margin:20px 0 14px;color:var(--text)}
+
+/* RESUMEN */
+.resumen-box{background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:16px;border:1px solid var(--border)}
+.resumen-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--text2)}
+.resumen-total{font-weight:500;border-top:1px solid var(--border);margin-top:8px;padding-top:10px;font-size:15px;color:var(--text)}
+
+/* PROMO CARD */
+.promo-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 0}
+.promo-name{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:6px;color:var(--accent)}
+.promo-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+.promo-price{font-size:18px;font-weight:500;margin-bottom:12px}
+
+/* ADMIN */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
+.stat-card{background:var(--surface2);border-radius:10px;padding:12px 8px;text-align:center;border:1px solid var(--border)}
+.stat-num{font-size:20px;font-weight:500;color:var(--accent)}
+.stat-label{font-size:10px;color:var(--text2);margin-top:3px}
+.filter-bar{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.filter-btn{font-size:12px;padding:5px 12px;border:1px solid var(--border);border-radius:20px;background:transparent;cursor:pointer;color:var(--text2);font-family:'DM Sans',sans-serif;transition:all .2s}
+.filter-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.pedido-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.pedido-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.pedido-nombre{font-size:14px;font-weight:500}
+.pedido-meta{font-size:12px;color:var(--text2);margin-bottom:6px}
+.pedido-items{font-size:13px;margin-bottom:8px;color:var(--text2)}
+.pedido-total{font-size:14px;font-weight:500;color:var(--accent);margin-bottom:10px}
+.pedido-footer{display:flex;gap:8px;flex-wrap:wrap}
+.pedido-footer button{font-size:12px;padding:6px 14px;border:1px solid var(--border);border-radius:20px;background:transparent;cursor:pointer;color:var(--text);font-family:'DM Sans',sans-serif}
+.pedido-footer button:hover{border-color:var(--accent);color:var(--accent)}
+.badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:500}
+.badge-new{background:var(--warn);color:var(--warn-t)}
+.badge-prep{background:var(--info);color:var(--info-t)}
+.badge-ready{background:var(--success);color:var(--success-t)}
+.badge-done{background:var(--surface2);color:var(--text2)}
+.empty-state{text-align:center;color:var(--text2);font-size:14px;padding:40px 20px}
+.admin-note{font-size:11px;color:var(--text2);background:var(--surface2);border-radius:8px;padding:10px 14px;margin-bottom:14px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-circle">🍣</div>
+  <div>
+    <div class="brand-name">Bestsushi</div>
+    <div class="brand-sub">Sabores que encantan · Paredones</div>
+  </div>
+  <div class="horario-badge">Mar–Dom<br>12:30–22:30</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab('carta',this)">🍱 Carta</button>
+  <button class="tab" onclick="switchTab('promos',this)">🎉 Promociones</button>
+  <button class="tab" id="tab-btn-pedido" style="display:none" onclick="switchTab('pedido',this)">🛒 Mi pedido</button>
+  <button class="tab" onclick="switchTab('admin',this)">⚙️ Admin</button>
+</div>
+
+<!-- CARTA -->
+<div id="tab-carta" class="section active" style="padding-top:8px">
+  <div id="success-msg" class="success-msg">✅ Pedido enviado. Te contactaremos pronto por WhatsApp.</div>
+  <div id="carta-content"></div>
+</div>
+
+<!-- PROMOS -->
+<div id="tab-promos" class="section" style="padding-top:8px">
+  <div id="promos-content"></div>
+</div>
+
+<!-- PEDIDO / CONFIRMAR -->
+<div id="tab-pedido" class="section" style="padding-top:16px">
+  <div class="form-section-title">Tu pedido</div>
+  <div class="resumen-box" id="resumen-detalle"></div>
+  <button class="btn-sec" onclick="switchTab('carta',document.querySelector('.tab'))" style="margin-bottom:20px;width:100%">+ Seguir agregando</button>
+  <div class="form-section-title">Tus datos</div>
+  <div class="form-group"><label>Nombre</label><input type="text" id="nombre" placeholder="Tu nombre"></div>
+  <div class="form-group"><label>Teléfono WhatsApp</label><input type="tel" id="telefono" placeholder="+56 9 1234 5678"></div>
+  <div class="form-group"><label>Tipo de entrega</label>
+    <select id="tipo-entrega" onchange="toggleDir()">
+      <option value="retiro">🏠 Retiro en local</option>
+      <option value="delivery">🛵 Delivery</option>
+    </select>
+  </div>
+  <div class="form-group" id="dir-group" style="display:none"><label>Dirección</label><input type="text" id="direccion" placeholder="Tu dirección en Paredones"></div>
+  <div class="form-group"><label>Notas (opcional)</label><textarea id="notas" rows="2" placeholder="Alergias, sin picante, instrucciones especiales..."></textarea></div>
+  <button class="btn-primary" onclick="enviarPedido()">Confirmar pedido →</button>
+</div>
+
+<!-- ADMIN -->
+<div id="tab-admin" class="section" style="padding-top:16px">
+  <div class="admin-note">Panel interno · Solo para el equipo de Bestsushi</div>
+  <div class="stats-grid" id="stats-grid"></div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filtrar('todos',this)">Todos</button>
+    <button class="filter-btn" onclick="filtrar('nuevo',this)">Nuevos</button>
+    <button class="filter-btn" onclick="filtrar('preparando',this)">Preparando</button>
+    <button class="filter-btn" onclick="filtrar('listo',this)">Listos</button>
+    <button class="filter-btn" onclick="filtrar('entregado',this)">Entregados</button>
+  </div>
+  <div id="lista-pedidos"></div>
+</div>
+
+<!-- CARRITO FLOTANTE -->
+<div class="carrito-bar" id="carrito-bar">
+  <button class="btn-primary" onclick="irAPedido()">Ver pedido — <span id="carrito-total">$0</span></button>
+</div>
+
+<script>
+const categorias=[
+  {nombre:'Rolls clásicos',nota:'10 piezas · queso crema + proteína + vegetal a elección',items:[
+    {id:'c1',nombre:'Frito en Panko',precio:4800,desc:'Pollo / Camarón / Kanikama — Palta / Palmito / Choclillo / Ciboulette'},
+    {id:'c2',nombre:'Envuelto en Queso',precio:6000,desc:'Pollo / Camarón / Kanikama — Palta / Palmito / Choclillo / Ciboulette'},
+    {id:'c3',nombre:'Envuelto en Sésamo',precio:4500,desc:'Pollo / Camarón / Kanikama — Palta / Palmito / Choclillo / Ciboulette'},
+    {id:'c4',nombre:'Envuelto en Nori',precio:4300,desc:'Pollo / Camarón / Kanikama — Palta / Palmito / Choclillo / Ciboulette'},
+    {id:'c5',nombre:'Envuelto en Palta',precio:5500,desc:'Pollo / Camarón / Kanikama — Palta / Palmito / Choclillo / Ciboulette'},
+    {id:'c6',nombre:'Envuelto en Ciboulette',precio:4500,desc:'Pollo / Camarón / Kanikama — Palta / Palmito / Choclillo / Ciboulette'},
+    {id:'c7',nombre:'Envuelto en Salmón',precio:6500,desc:'Pollo / Camarón / Kanikama — Palta / Palmito / Choclillo / Ciboulette'},
+  ]},
+  {nombre:'Rolls especiales',nota:'10 piezas · relleno a elección',items:[
+    {id:'e1',nombre:'Tiger Roll',precio:6500,desc:'Frito en Panko · Queso crema, palta, ciboulette, salmón o carne vacuno'},
+    {id:'e2',nombre:'Acevichado Roll',precio:7500,desc:'Envuelto en Ciboulette · Topping de ceviche: salmón / palta / cebolla morada / pimentón'},
+    {id:'e3',nombre:'Luco Roll',precio:6500,desc:'Frito en Panko · Queso crema, carne vacuno, queso Gauda'},
+    {id:'e4',nombre:'Crocante Roll',precio:7000,desc:'Envuelto en Queso o Palta · Pollo/Camarón apanado, palta/cebollín · Bañado en salsa acevichada con papas hilo'},
+    {id:'e5',nombre:'Tropical Roll',precio:8700,desc:'Envuelto en Queso · Camarón Furay, palta · Topping de ceviche: salmón/mango/palta/cebolla morada/pimentón'},
+    {id:'e6',nombre:'Roll sin Arroz — Salmón',precio:10000,desc:'Frito en Panko o Envuelto en Palta/Queso · Queso crema, salmón & camarón apanado, palta/cebollín'},
+    {id:'e7',nombre:'Roll sin Arroz — Pollo',precio:10000,desc:'Frito en Panko o Envuelto en Palta/Queso · Queso crema, pollo & camarón apanado, palta/cebollín'},
+    {id:'e8',nombre:'Saltado Roll',precio:11500,desc:'Queso crema, palta · Topping de lomo saltado 120g con cebolla morada / pimentón / papas hilo'},
+    {id:'e9',nombre:'Flamed Cheese Roll',precio:7500,desc:'Envuelto en queso crema flambeado · Camarón / Pollo / Kani Furay · Topping papas hilo'},
+    {id:'e10',nombre:'Flamed Salmon Roll',precio:7800,desc:'Envuelto en Salmón Flambeado · Queso crema, palta, camarón Furay · Bañado en salsa acevichada'},
+    {id:'e11',nombre:'Brasileño Roll',precio:8000,desc:'Envuelto en Queso Gauda flambeado y merkén · Queso crema, palta, carne vacuno · Incluye salsa spicy'},
+  ]},
+  {nombre:'Handrolls',items:[
+    {id:'h1',nombre:'Handroll Pollo/Queso',precio:3500,desc:''},
+    {id:'h2',nombre:'Handroll Camarón/Queso',precio:3500,desc:''},
+    {id:'h3',nombre:'Handroll Kanikama/Queso',precio:3500,desc:''},
+  ]},
+  {nombre:'Sushi Burger',items:[
+    {id:'sb1',nombre:'Sushi Burger',precio:10000,desc:'Base queso crema · 2 proteínas (Pollo / Camarón apanado / Kanikama / Carne vacuno / Salmón) · 2 vegetales (Palta / Cebollín / Pimentón)'},
+  ]},
+  {nombre:'Gohan',items:[
+    {id:'g1',nombre:'Gohan Pollo Furay',precio:7000,desc:'Base arroz / palta / queso / cebollín'},
+    {id:'g2',nombre:'Gohan Camarón Furay',precio:7000,desc:'Base arroz / palta / queso / cebollín'},
+    {id:'g3',nombre:'Gohan Mixto Pollo/Camarón Furay',precio:7500,desc:'Base arroz / palta / queso / cebollín'},
+    {id:'g4',nombre:'Gohan Mixto Salmón/Camarón Furay',precio:8000,desc:'Base arroz / palta / queso / cebollín'},
+  ]},
+  {nombre:'Aperitivos',items:[
+    {id:'a1',nombre:'10 Gyozas Pollo/Cerdo',precio:3700,desc:''},
+    {id:'a2',nombre:'10 Gyozas Pasta de Camarón',precio:3800,desc:''},
+    {id:'a3',nombre:'5 Arrollados Primavera',precio:3200,desc:''},
+    {id:'a4',nombre:'5 Arrollados Jamón Queso',precio:3200,desc:''},
+    {id:'a5',nombre:'5 Arrollados Camarón Queso',precio:3500,desc:''},
+    {id:'a6',nombre:'5 Empanadas Pollo Mandarín',precio:3800,desc:''},
+    {id:'a7',nombre:'5 Empanadas Camarón Mandarín',precio:4000,desc:''},
+    {id:'a8',nombre:'5 Empanadas Queso Solo',precio:3200,desc:''},
+    {id:'a9',nombre:'5 Camarón Furay',precio:4000,desc:''},
+  ]},
+  {nombre:'Bebidas',items:[
+    {id:'b1',nombre:'Coca Cola / Sprite (lata)',precio:1400,desc:''},
+    {id:'b2',nombre:'Kem / Limón soda / Pepsi (lata)',precio:1300,desc:''},
+  ]},
+];
+
+const promos=[
+  {nombre:'25 Piezas Mixtas',precio:12000,desc:'10 Fritas (pollo/ciboulette/queso) · 10 Sésamo (kani/choclillo/queso) · 5 Ciboulette (camarón/palta/queso) · 2 Arrollados Primavera · 2 Empanadas de queso'},
+  {nombre:'50 Piezas Mix',precio:19500,desc:'30 Fritas variadas · 10 Ciboulette (camarón/palta/queso) · 10 Sésamo (kani/palmito/queso)'},
+  {nombre:'50 Piezas Mix Premium',precio:29500,desc:'10 Envuelto en Palta · 10 Envuelto en Queso · 10 Luco Roll · 10 Tiger Roll (salmón o carne/palta/cebollín) · 10 Roll sin arroz'},
+  {nombre:'80 Piezas Mix',precio:30000,desc:'40 Fritas variadas · 10 Ciboulette · 5 Ciboulette camarón · 10 Sésamo kani · 5 Sésamo camarón · 10 Nori camarón'},
+  {nombre:'100 Piezas Mix',precio:36000,desc:'50 Fritas variadas · 20 Ciboulette variadas · 20 Sésamo variadas · 10 Nori (camarón/ciboulette/queso)'},
+];
+
+let cantidades={};
+let pedidos=[];
+let nextId=1;
+let filtroActual='todos';
+
+function fmt(n){return '$'+n.toLocaleString('es-CL')}
+
+function renderCarta(){
+  let html='';
+  categorias.forEach(cat=>{
+    html+=`<div class="cat-label">${cat.nombre}</div>`;
+    if(cat.nota)html+=`<div class="cat-note">${cat.nota}</div>`;
+    cat.items.forEach(item=>{
+      const qty=cantidades[item.id]||0;
+      html+=`<div class="item-row">
+        <div class="item-info">
+          <div class="item-name">${item.nombre}</div>
+          ${item.desc?`<div class="item-desc">${item.desc}</div>`:''}
+        </div>
+        <div class="item-right">
+          <div class="item-price">${fmt(item.precio)}</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="cambiar('${item.id}',-1)">−</button>
+            <span class="qty-num" id="qty-${item.id}">${qty||'+'}</span>
+            <button class="qty-btn" onclick="cambiar('${item.id}',1)">+</button>
+          </div>
+        </div>
+      </div>`;
+    });
+  });
+  document.getElementById('carta-content').innerHTML=html;
+  actualizarCarrito();
+}
+
+function renderPromos(){
+  let html='<p style="font-size:12px;color:var(--text2);margin:12px 0 4px;">Los rellenos pueden modificarse por costo adicional.</p>';
+  promos.forEach((p,i)=>{
+    html+=`<div class="promo-card">
+      <div class="promo-name">${p.nombre}</div>
+      <div class="promo-desc">${p.desc}</div>
+      <div class="promo-price">${fmt(p.precio)}</div>
+      <button class="btn-sec" onclick="agregarPromo(${i})">+ Agregar al pedido</button>
+    </div>`;
+  });
+  document.getElementById('promos-content').innerHTML=html;
+}
+
+function agregarPromo(i){
+  const key='promo_'+i;
+  cantidades[key]=(cantidades[key]||0)+1;
+  actualizarCarrito();
+  alert('✅ '+promos[i].nombre+' agregado al pedido');
+}
+
+function cambiar(id,delta){
+  const allItems=categorias.flatMap(c=>c.items);
+  cantidades[id]=Math.max(0,(cantidades[id]||0)+delta);
+  if(cantidades[id]===0)delete cantidades[id];
+  const el=document.getElementById('qty-'+id);
+  if(el)el.textContent=cantidades[id]||'+';
+  actualizarCarrito();
+}
+
+function actualizarCarrito(){
+  const allItems=categorias.flatMap(c=>c.items);
+  let total=0;
+  Object.entries(cantidades).forEach(([id,qty])=>{
+    if(id.startsWith('promo_')){total+=promos[parseInt(id.replace('promo_',''))].precio*qty;}
+    else{const item=allItems.find(i=>i.id===id);if(item)total+=item.precio*qty;}
+  });
+  const tiene=Object.keys(cantidades).length>0;
+  document.getElementById('carrito-bar').style.display=tiene?'block':'none';
+  document.getElementById('carrito-total').textContent=fmt(total);
+  document.getElementById('tab-btn-pedido').style.display=tiene?'inline-block':'none';
+}
+
+function irAPedido(){
+  actualizarResumen();
+  switchTab('pedido',document.getElementById('tab-btn-pedido'));
+}
+
+function actualizarResumen(){
+  const allItems=categorias.flatMap(c=>c.items);
+  let html='';let total=0;
+  Object.entries(cantidades).forEach(([id,qty])=>{
+    let nombre,precio;
+    if(id.startsWith('promo_')){const idx=parseInt(id.replace('promo_',''));nombre=promos[idx].nombre;precio=promos[idx].precio;}
+    else{const item=allItems.find(i=>i.id===id);if(!item)return;nombre=item.nombre;precio=item.precio;}
+    const sub=precio*qty;total+=sub;
+    html+=`<div class="resumen-row"><span>${nombre} x${qty}</span><span>${fmt(sub)}</span></div>`;
+  });
+  html+=`<div class="resumen-row resumen-total"><span>Total</span><span>${fmt(total)}</span></div>`;
+  document.getElementById('resumen-detalle').innerHTML=html;
+}
+
+function toggleDir(){
+  document.getElementById('dir-group').style.display=document.getElementById('tipo-entrega').value==='delivery'?'block':'none';
+}
+
+function enviarPedido(){
+  const nombre=document.getElementById('nombre').value.trim();
+  const telefono=document.getElementById('telefono').value.trim();
+  const tipo=document.getElementById('tipo-entrega').value;
+  const direccion=document.getElementById('direccion').value.trim();
+  const notas=document.getElementById('notas').value.trim();
+  if(!nombre||!telefono){alert('Por favor ingresa nombre y teléfono');return;}
+  if(tipo==='delivery'&&!direccion){alert('Por favor ingresa tu dirección');return;}
+  const allItems=categorias.flatMap(c=>c.items);
+  let items=[];let total=0;
+  Object.entries(cantidades).forEach(([id,qty])=>{
+    let n,p;
+    if(id.startsWith('promo_')){const idx=parseInt(id.replace('promo_',''));n=promos[idx].nombre;p=promos[idx].precio;}
+    else{const item=allItems.find(i=>i.id===id);if(!item)return;n=item.nombre;p=item.precio;}
+    items.push({nombre:n,qty,precio:p});total+=p*qty;
+  });
+  const hora=new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+  pedidos.unshift({id:nextId++,nombre,telefono,tipo,direccion,items,total,estado:'nuevo',hora,notas});
+  cantidades={};
+  ['nombre','telefono','notas','direccion'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  switchTab('carta',document.querySelector('.tab'));
+  renderCarta();
+  const msg=document.getElementById('success-msg');
+  msg.style.display='block';
+  setTimeout(()=>msg.style.display='none',4000);
+}
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(tab==='admin')renderAdmin();
+  if(tab==='pedido')actualizarResumen();
+}
+
+function cambiarEstado(id,estado){
+  const p=pedidos.find(p=>p.id===id);
+  if(p){p.estado=estado;renderAdmin();}
+}
+
+function filtrar(estado,btn){
+  filtroActual=estado;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPedidos();
+}
+
+const eLabel={nuevo:'Nuevo',preparando:'Preparando',listo:'Listo',entregado:'Entregado'};
+const eBadge={nuevo:'badge-new',preparando:'badge-prep',listo:'badge-ready',entregado:'badge-done'};
+
+function renderAdmin(){
+  const total=pedidos.length;
+  const nuevos=pedidos.filter(p=>p.estado==='nuevo').length;
+  const enPrep=pedidos.filter(p=>p.estado==='preparando').length;
+  const ingresos=pedidos.reduce((s,p)=>s+p.total,0);
+  document.getElementById('stats-grid').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Pedidos</div></div>
+    <div class="stat-card"><div class="stat-num">${nuevos}</div><div class="stat-label">Nuevos</div></div>
+    <div class="stat-card"><div class="stat-num">${enPrep}</div><div class="stat-label">Prep.</div></div>
+    <div class="stat-card"><div class="stat-num">$${Math.round(ingresos/1000)}k</div><div class="stat-label">Total</div></div>
+  `;
+  renderPedidos();
+}
+
+function renderPedidos(){
+  const lista=pedidos.filter(p=>filtroActual==='todos'||p.estado===filtroActual);
+  if(lista.length===0){
+    document.getElementById('lista-pedidos').innerHTML='<div class="empty-state">No hay pedidos aquí aún 🍣</div>';
+    return;
+  }
+  document.getElementById('lista-pedidos').innerHTML=lista.map(p=>`
+    <div class="pedido-card">
+      <div class="pedido-header"><span class="pedido-nombre">${p.nombre}</span><span class="badge ${eBadge[p.estado]}">${eLabel[p.estado]}</span></div>
+      <div class="pedido-meta">🕐 ${p.hora} &nbsp;·&nbsp; ${p.tipo==='delivery'?'🛵 Delivery':'🏠 Retiro'}${p.direccion?' — '+p.direccion:''}</div>
+      <div class="pedido-items">${p.items.map(i=>i.nombre+' x'+i.qty).join(' · ')}</div>
+      <div class="pedido-total">${fmt(p.total)}</div>
+      ${p.notas?`<div class="pedido-meta" style="font-style:italic;margin-bottom:8px;">💬 ${p.notas}</div>`:''}
+      <div class="pedido-footer">
+        ${p.estado==='nuevo'?`<button onclick="cambiarEstado(${p.id},'preparando')">👨‍🍳 Preparar</button>`:''}
+        ${p.estado==='preparando'?`<button onclick="cambiarEstado(${p.id},'listo')">✅ Listo</button>`:''}
+        ${p.estado==='listo'?`<button onclick="cambiarEstado(${p.id},'entregado')">📦 Entregado</button>`:''}
+        <button onclick="window.open('https://wa.me/'+('${0}'||'').replace(/[^0-9]/g,''))">💬 ${p.telefono}</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+renderCarta();
+renderPromos();
+renderAdmin();
+</script>
+</body>
+</html>
